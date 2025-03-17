@@ -189,6 +189,7 @@ float turbulence(vec3 p) {
 
 // START
 uniform float time;
+uniform float scrollProgress;
 varying vec2 vUv;
 varying float noise;
 
@@ -239,7 +240,16 @@ void main() {
 
   vUv = uv;
 
-  noise = turbulence(0.01 * position + normal + time * 0.8);
-  vec3 displacement = vec3((position.x) * noise, position.y * noise, position.z * noise);
+  // Enhanced noise calculation with scroll influence
+  noise = turbulence(0.01 * position + normal + time * (0.8 + scrollProgress * 0.5));
+  
+  // Enhanced displacement with scroll influence
+  float scrollFactor = 1.0 + scrollProgress * 2.0;
+  vec3 displacement = vec3(
+    (position.x) * noise * scrollFactor,
+    position.y * noise * scrollFactor,
+    position.z * noise * scrollFactor
+  );
+  
   gl_Position = projectionMatrix * modelViewMatrix * vec4((position + normal) + displacement, 1.0);
 }

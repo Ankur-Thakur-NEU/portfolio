@@ -47,10 +47,26 @@ export const DisplacementSphere = props => {
   const windowSize = useWindowSize();
   const rotationX = useSpring(0, springConfig);
   const rotationY = useSpring(0, springConfig);
+  const scrollProgress = useSpring(0, springConfig);
+
+  // Add scroll handler
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      scrollProgress.set(scrollPercent);
+      
+      if (uniforms.current) {
+        uniforms.current.scrollProgress = { type: 'f', value: scrollPercent };
+      }
+    }, 16);
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrollProgress]);
 
   useEffect(() => {
-    const { innerWidth, innerHeight } = window;
-    mouse.current = new Vector2(0.8, 0.5);
+    const { clientWidth, clientHeight } = canvasRef.current;
+
     renderer.current = new WebGLRenderer({
       canvas: canvasRef.current,
       antialias: false,
@@ -58,11 +74,12 @@ export const DisplacementSphere = props => {
       powerPreference: 'high-performance',
       failIfMajorPerformanceCaveat: true,
     });
-    renderer.current.setSize(innerWidth, innerHeight);
-    renderer.current.setPixelRatio(1);
+
+    renderer.current.setPixelRatio(2);
+    renderer.current.setSize(clientWidth, clientHeight);
     renderer.current.outputColorSpace = LinearSRGBColorSpace;
 
-    camera.current = new PerspectiveCamera(54, innerWidth / innerHeight, 0.1, 100);
+    camera.current = new PerspectiveCamera(54, clientWidth / clientHeight, 0.1, 100);
     camera.current.position.z = 52;
 
     scene.current = new Scene();
@@ -71,7 +88,10 @@ export const DisplacementSphere = props => {
     material.current.onBeforeCompile = shader => {
       uniforms.current = UniformsUtils.merge([
         shader.uniforms,
-        { time: { type: 'f', value: 0 } },
+        { 
+          time: { type: 'f', value: 0 },
+          scrollProgress: { type: 'f', value: 0 }
+        },
       ]);
 
       shader.uniforms = uniforms.current;
@@ -167,6 +187,13 @@ export const DisplacementSphere = props => {
       sphere.current.rotation.z += 0.001;
       sphere.current.rotation.x = rotationX.get();
       sphere.current.rotation.y = rotationY.get();
+      
+      // Add scroll-based distortion
+      if (sphere.current && !reduceMotion) {
+        const scrollValue = scrollProgress.get();
+        sphere.current.scale.x = 1 + scrollValue * 0.3;
+        sphere.current.scale.y = 1 + scrollValue * 0.3;
+      }
 
       renderer.current.render(scene.current, camera.current);
     };
@@ -180,7 +207,7 @@ export const DisplacementSphere = props => {
     return () => {
       cancelAnimationFrame(animation);
     };
-  }, [isInViewport, reduceMotion, rotationX, rotationY]);
+  }, [isInViewport, reduceMotion, rotationX, rotationY, scrollProgress]);
 
   return (
     <Transition in timeout={3000} nodeRef={canvasRef}>

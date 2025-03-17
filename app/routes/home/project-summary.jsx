@@ -8,15 +8,19 @@ import { useTheme } from '~/components/theme-provider';
 import { Transition } from '~/components/transition';
 import { Loader } from '~/components/loader';
 import { useWindowSize } from '~/hooks';
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useState, forwardRef, useRef } from 'react';
 import { cssProps, media } from '~/utils/style';
 import { useHydrated } from '~/hooks/useHydrated';
 import katakana from './katakana.svg';
 import styles from './project-summary.module.css';
+import { useSmoothParallax } from '~/hooks/useSmoothParallax';
+import { Image } from '~/components/image';
 
 const Model = lazy(() =>
   import('~/components/model').then(module => ({ default: module.Model }))
 );
+
+const initDelay = 300;
 
 export function ProjectSummary({
   id,
@@ -42,6 +46,8 @@ export function ProjectSummary({
   const indexText = index < 10 ? `0${index}` : index;
   const phoneSizes = `(max-width: ${media.tablet}px) 30vw, 20vw`;
   const laptopSizes = `(max-width: ${media.tablet}px) 80vw, 40vw`;
+  const parallax = useSmoothParallax(0.3);
+  const parallaxRef = useRef();
 
   function handleModelLoad() {
     setModelLoaded(true);
@@ -100,11 +106,18 @@ export function ProjectSummary({
 
   function renderPreview(visible) {
     return (
-      <div className={styles.preview}>
+      <div className={styles.preview} ref={parallaxRef}>
         {model.type === 'laptop' && (
           <>
             {renderKatakana('laptop', visible)}
-            <div className={styles.model} data-device="laptop">
+            <div
+              className={styles.model}
+              data-device="laptop"
+              style={cssProps({ 
+                transformY: parallax.get() * 100 + 'px',
+                transition: 'transform 0.1s ease-out'
+              })}
+            >
               {!modelLoaded && (
                 <Loader center className={styles.loader} data-visible={visible} />
               )}

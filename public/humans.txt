@@ -1,7 +1,53 @@
-__  __  __
-\ \ \ \ \/
- \ \/\ \
-  \/  \/
+/* TEAM */
+                            
+Software Engineer: Ankur Thakur
+Location: Atlanta, USA
+Github: https://github.com/Ankur-Thakur-Neu
+LinkedIn: https://linkedin.com/in/ankurthakur-neu
+
+/* SKILLS */
+
+Languages:        JavaScript/TypeScript, C#, Python
+Frontend:         Angular (6-18), React, HTML5, CSS/Sass
+Backend:          Node.js, .NET Core
+Cloud:            Azure (Pipelines, DevOps), AWS (S3, EC2)
+Databases:        SQL Server, PostgreSQL, Cosmos DB
+Tools:            VS Code, Visual Studio, Git, Jira
+Integration:      API Management, SSIS, Informatica
+
+/* WORK */
+
+Current: Software Engineer at Tyler Technology
+- Enterprise Permitting & Licensing Solutions
+- Full-stack Development with .NET and Angular
+
+Previous: Insurance Software Development at Xuber
+- Global Commercial Market Solutions
+- Angular and .NET Development
+
+Previous: Employee Onboarding at Frontier Software
+- Digital Transformation of HR Processes
+- Process Automation and Integration
+
+/* SITE */
+
+Last update: 2024/03/17
+Standards: HTML5, CSS3, JavaScript
+Components: React, Remix, Vite
+Software: VS Code, Git
+
+/* SETUP */
+
+Workstation: Custom built PC
+Laptop: Dell Alienware M15 R3
+OS: Windows 11 / Ubuntu
+Terminal: Windows Terminal / WSL2
+Browser: Chrome / Firefox
+
+                            __  __  __
+                           \ \ \ \ \∕
+                            \ \∕\ \
+                             \∕  \∕
 
 The humans.txt file explains the team, technology,
 and graphic assets behind this site humanstxt.org.
