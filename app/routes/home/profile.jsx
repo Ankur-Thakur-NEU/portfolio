@@ -29,7 +29,7 @@ const ProfileText = ({ visible, titleId }) => (
     </Text>
     <Text className={styles.description} data-visible={visible} size="l" as="p">
       In my spare time I like to travel and visit new places, watch soccer, and{' '}
-      <Link href="/projects/volkihar-knight">cricket</Link>. I'm always down for hearing
+      <Link href="https://www.icc-cricket.com/">cricket</Link>. I'm always down for hearing
       about new projects, so feel free to drop me a line.
     </Text>
   </Fragment>
