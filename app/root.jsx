@@ -13,7 +13,7 @@ import { createCookieSessionStorage, json } from '@remix-run/cloudflare';
 import { ThemeProvider, themeStyles } from '~/components/theme-provider';
 import GothamBook from '~/assets/fonts/gotham-book.woff2';
 import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Error } from '~/layouts/error';
 import { VisuallyHidden } from '~/components/visually-hidden';
 import { Navbar } from '~/layouts/navbar';
@@ -29,14 +29,14 @@ export const links = () => [
     href: GothamMedium,
     as: 'font',
     type: 'font/woff2',
-    crossOrigin: '',
+    crossOrigin: 'anonymous',
   },
   {
     rel: 'preload',
     href: GothamBook,
     as: 'font',
     type: 'font/woff2',
-    crossOrigin: '',
+    crossOrigin: 'anonymous',
   },
   { rel: 'manifest', href: '/manifest.json' },
   { rel: 'icon', href: '/favicon.ico' },
@@ -78,17 +78,28 @@ export const loader = async ({ request, context }) => {
 };
 
 export default function App() {
-  let { canonicalUrl, theme } = useLoaderData();
+  const { canonicalUrl, theme: initialTheme } = useLoaderData();
   const fetcher = useFetcher();
   const { state } = useNavigation();
+  const [theme, setTheme] = useState(initialTheme);
 
-  if (fetcher.formData?.has('theme')) {
-    theme = fetcher.formData.get('theme');
-  }
+  // Handle theme updates from form submissions
+  useEffect(() => {
+    if (fetcher.formData?.has('theme')) {
+      setTheme(fetcher.formData.get('theme'));
+    }
+  }, [fetcher.formData]);
+
+  // Ensure initial theme is synced with the server
+  useEffect(() => {
+    setTheme(initialTheme);
+  }, [initialTheme]);
 
   function toggleTheme(newTheme) {
+    const nextTheme = newTheme ? newTheme : theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
     fetcher.submit(
-      { theme: newTheme ? newTheme : theme === 'dark' ? 'light' : 'dark' },
+      { theme: nextTheme },
       { action: '/api/set-theme', method: 'post' }
     );
   }
@@ -99,6 +110,19 @@ export default function App() {
       `Taking a peek huh? Check out the source code: ${config.repo}\n\n`
     );
   }, []);
+
+  // Suppress hydration warnings from Grammarly
+  useEffect(() => {
+    const suppressHydrationWarning = () => {
+      const body = document.body;
+      if (body) {
+        body.removeAttribute('data-new-gr-c-s-check-loaded');
+        body.removeAttribute('data-gr-ext-installed');
+      }
+    };
+    suppressHydrationWarning();
+    // Re-run when theme changes as it might trigger re-renders
+  }, [theme]);
 
   return (
     <html lang="en">
@@ -116,7 +140,10 @@ export default function App() {
         <Links />
         <link rel="canonical" href={canonicalUrl} />
       </head>
-      <body data-theme={theme}>
+      <body 
+        data-theme={theme}
+        suppressHydrationWarning={true}
+      >
         <ThemeProvider theme={theme} toggleTheme={toggleTheme}>
           <Progress />
           <VisuallyHidden showOnFocus as="a" className={styles.skip} href="#main-content">

@@ -106,7 +106,7 @@ export const Home = () => {
         title="Enterprise Permitting & Licensing"
         description="A comprehensive solution for local governments to manage permits and licenses efficiently."
         buttonText="View Project"
-        buttonLink="/projects/enterprise-permitting"
+        buttonLink="https://www.tylertech.com/products/enterprise-permitting-licensing"
         model={{
           type: 'laptop',
           alt: 'Enterprise Permitting & Licensing',
