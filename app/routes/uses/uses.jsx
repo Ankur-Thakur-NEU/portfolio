@@ -1,5 +1,4 @@
-import usesBackgroundPlaceholder from '~/assets/uses-background-placeholder.jpg';
-import usesBackground from '~/assets/uses-background.mp4';
+import milkywayBackground from '~/assets/milkyway.jpg';
 import { Footer } from '~/components/footer';
 import { Link } from '~/components/link';
 import { List, ListItem } from '~/components/list';
@@ -29,8 +28,8 @@ export const Uses = () => {
     <>
       <ProjectContainer className={styles.uses}>
         <ProjectBackground
-          src={usesBackground}
-          placeholder={usesBackgroundPlaceholder}
+          src={milkywayBackground}
+          placeholder={milkywayBackground}
           opacity={0.7}
         />
         <ProjectHeader
