@@ -111,21 +111,34 @@ export default function App() {
     );
   }, []);
 
-  // Suppress hydration warnings from Grammarly
+  // Handle Grammarly elements and other third-party injected content
   useEffect(() => {
-    const suppressHydrationWarning = () => {
-      const body = document.body;
-      if (body) {
-        body.removeAttribute('data-new-gr-c-s-check-loaded');
-        body.removeAttribute('data-gr-ext-installed');
+    const handleInjectedContent = () => {
+      // Remove Grammarly attributes that cause hydration warnings
+      document.body?.removeAttribute('data-new-gr-c-s-check-loaded');
+      document.body?.removeAttribute('data-gr-ext-installed');
+      
+      // Remove any Grammarly elements that might have been injected
+      const grammarly = document.querySelector('grammarly-desktop-integration');
+      if (grammarly) {
+        grammarly.remove();
       }
     };
-    suppressHydrationWarning();
-    // Re-run when theme changes as it might trigger re-renders
-  }, [theme]);
+
+    handleInjectedContent();
+    
+    // Create a MutationObserver to handle dynamically injected elements
+    const observer = new MutationObserver(handleInjectedContent);
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -142,7 +155,7 @@ export default function App() {
       </head>
       <body 
         data-theme={theme}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         <ThemeProvider theme={theme} toggleTheme={toggleTheme}>
           <Progress />
