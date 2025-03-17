@@ -1,15 +1,15 @@
-import gamestackTexture2Large from '~/assets/gamestack-list-large.jpg';
-import gamestackTexture2Placeholder from '~/assets/gamestack-list-placeholder.jpg';
-import gamestackTexture2 from '~/assets/gamestack-list.jpg';
-import gamestackTextureLarge from '~/assets/gamestack-login-large.jpg';
-import gamestackTexturePlaceholder from '~/assets/gamestack-login-placeholder.jpg';
-import gamestackTexture from '~/assets/gamestack-login.jpg';
-import sliceTextureLarge from '~/assets/slice-app-large.jpg';
-import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
-import sliceTexture from '~/assets/slice-app.jpg';
-import sprTextureLarge from '~/assets/spr-lesson-builder-dark-large.jpg';
-import sprTexturePlaceholder from '~/assets/spr-lesson-builder-dark-placeholder.jpg';
-import sprTexture from '~/assets/spr-lesson-builder-dark.jpg';
+import xuberTexture2Large from '~/assets/xuber.webp';
+import xuberTexture2Placeholder from '~/assets/gamestack-list-placeholder.jpg';
+import xuberTexture2 from '~/assets/xuber.webp';
+import xuberTextureLarge from '~/assets/xuber.webp';
+import xuberTexturePlaceholder from '~/assets/gamestack-login-placeholder.jpg';
+import xuberTexture from '~/assets/xuber.webp';
+import frontieTextureLarge from '~/assets/frontier.png';
+import frontierTexturePlaceholder from '~/assets/frontier-placeholder.jpg';
+import frontierTexture from '~/assets/frontier.png';
+import tylerTextureLarge from '~/assets/tyler.jpeg';
+import tylerTexturePlaceholder from '~/assets/tyler-placeholder.png';
+import tylerTexture from '~/assets/tyler.jpeg';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -41,8 +41,8 @@ export const links = () => {
 
 export const meta = () => {
   return baseMeta({
-    title: 'Designer + Developer',
-    description: `Design portfolio of ${config.name} — a product designer working on web & mobile apps with a focus on motion, experience design, and accessibility.`,
+    title: 'Software Engineer + Frontend Developer',
+    description: `Portfolio of ${config.name} — a software engineer working on web applications with a focus on frontend development, UI/UX, and full-stack engineering.`,
   });
 };
 
@@ -103,62 +103,63 @@ export const Home = () => {
         sectionRef={projectOne}
         visible={visibleSections.includes(projectOne.current)}
         index={1}
-        title="Designing the future of education"
-        description="Designing a platform to help educators build better online courseware"
-        buttonText="View project"
-        buttonLink="/projects/smart-sparrow"
+        title="Enterprise Permitting & Licensing"
+        description="A comprehensive solution for local governments to manage permits and licenses efficiently."
+        buttonText="View Project"
+        buttonLink="/projects/enterprise-permitting"
         model={{
           type: 'laptop',
-          alt: 'Smart Sparrow lesson builder',
+          alt: 'Enterprise Permitting & Licensing',
           textures: [
             {
-              srcSet: `${sprTexture} 1280w, ${sprTextureLarge} 2560w`,
-              placeholder: sprTexturePlaceholder,
+              srcSet: `${tylerTexture} 1280w, ${tylerTextureLarge} 2560w`,
+              placeholder: tylerTexturePlaceholder,
             },
           ],
         }}
       />
+      
       <ProjectSummary
         id="project-2"
-        alternate
         sectionRef={projectTwo}
         visible={visibleSections.includes(projectTwo.current)}
         index={2}
-        title="Video game progress tracking"
-        description="Design and development for a video game tracking app built in React Native"
-        buttonText="View website"
-        buttonLink="https://gamestack.hamishw.com"
+        title="Xuber - Insurance Software for the Global Commercial Market"
+        description="Design and development for a Insurance Software built in Angular and .NET"
+        buttonText="View project"
+        buttonLink="http://xuber.com"
         model={{
-          type: 'phone',
-          alt: 'App login screen',
+          type: 'laptop',
+          alt: 'Xuber App',
           textures: [
             {
-              srcSet: `${gamestackTexture} 375w, ${gamestackTextureLarge} 750w`,
-              placeholder: gamestackTexturePlaceholder,
+              srcSet: `${xuberTexture} 375w, ${xuberTextureLarge} 750w`,
+              placeholder: xuberTexturePlaceholder,
             },
             {
-              srcSet: `${gamestackTexture2} 375w, ${gamestackTexture2Large} 750w`,
-              placeholder: gamestackTexture2Placeholder,
+              srcSet: `${xuberTexture2} 375w, ${xuberTexture2Large} 750w`,
+              placeholder: xuberTexture2Placeholder,
             },
           ],
         }}
       />
+      
       <ProjectSummary
         id="project-3"
         sectionRef={projectThree}
         visible={visibleSections.includes(projectThree.current)}
         index={3}
-        title="Biomedical image collaboration"
-        description="Increasing the amount of collaboration in Slice, an app for biomedical imaging"
+        title="Frontier Onboarding"
+        description="Employee onboarding software streamlines and automates the tasks associated with hiring new people, replacing slow, manual, and repetitive paper-based processes with a seamless digital experience"
         buttonText="View project"
-        buttonLink="/projects/slice"
+        buttonLink="https://www.frontiersoftware.com/module/onboarding"
         model={{
           type: 'laptop',
           alt: 'Annotating a biomedical image in the Slice app',
           textures: [
             {
-              srcSet: `${sliceTexture} 800w, ${sliceTextureLarge} 1920w`,
-              placeholder: sliceTexturePlaceholder,
+              srcSet: `${frontierTexture} 800w, ${frontieTextureLarge} 1920w`,
+              placeholder: frontierTexturePlaceholder,
             },
           ],
         }}

@@ -1,9 +1,9 @@
 {
-  "name": "portfolio",
-  "homepage": "https://hamishw.com",
-  "description": "Portfolio site for Hamish Williams",
-  "repository": "https://github.com/HamishMW/portfolio.git",
-  "author": "Hamish Williams",
+  "name": "ankur-thakur-portfolio",
+  "homepage": "https://ankurthakur.com",
+  "description": "Portfolio site for Ankur Thakur",
+  "repository": "https://github.com/AnkurThakur/portfolio.git",
+  "author": "Ankur Thakur",
   "sideEffects": false,
   "type": "module",
   "scripts": {
@@ -17,14 +17,12 @@
     "deploy:storybook": "wrangler pages deploy ./storybook-static --project-name portfolio-storybook --branch main"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.515.0",
     "@mdx-js/react": "^3.0.1",
     "@remix-run/cloudflare": "^2.7.1",
     "@remix-run/cloudflare-pages": "^2.7.1",
     "@remix-run/react": "^2.7.1",
     "framer-motion": "11.0.5",
-    "isbot": "^4.1.0",
-    "miniflare": "^3.20231030.4",
+    "isbot": "^4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rehype-img-size": "^1.0.1",
@@ -47,6 +45,7 @@
     "@storybook/test": "^7.6.17",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.2",

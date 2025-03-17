@@ -10,106 +10,73 @@ import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
 import { useFormInput } from '~/hooks';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
-import { Form, useActionData, useNavigation } from '@remix-run/react';
-import { json } from '@remix-run/cloudflare';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import styles from './contact.module.css';
 
 export const meta = () => {
   return baseMeta({
     title: 'Contact',
     description:
-      'Send me a message if you’re interested in discussing a project or if you just want to say hi',
+      "Send me a message if you're interested in discussing a project or if you just want to say hi",
   });
 };
 
 const MAX_EMAIL_LENGTH = 512;
 const MAX_MESSAGE_LENGTH = 4096;
-const EMAIL_PATTERN = /(.+)@(.+){2,}\.(.+){2,}/;
-
-export async function action({ context, request }) {
-  const ses = new SESClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: context.cloudflare.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: context.cloudflare.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
-
-  const formData = await request.formData();
-  const isBot = String(formData.get('name'));
-  const email = String(formData.get('email'));
-  const message = String(formData.get('message'));
-  const errors = {};
-
-  // Return without sending if a bot trips the honeypot
-  if (isBot) return json({ success: true });
-
-  // Handle input validation on the server
-  if (!email || !EMAIL_PATTERN.test(email)) {
-    errors.email = 'Please enter a valid email address.';
-  }
-
-  if (!message) {
-    errors.message = 'Please enter a message.';
-  }
-
-  if (email.length > MAX_EMAIL_LENGTH) {
-    errors.email = `Email address must be shorter than ${MAX_EMAIL_LENGTH} characters.`;
-  }
-
-  if (message.length > MAX_MESSAGE_LENGTH) {
-    errors.message = `Message must be shorter than ${MAX_MESSAGE_LENGTH} characters.`;
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return json({ errors });
-  }
-
-  // Send email via Amazon SES
-  await ses.send(
-    new SendEmailCommand({
-      Destination: {
-        ToAddresses: [context.cloudflare.env.EMAIL],
-      },
-      Message: {
-        Body: {
-          Text: {
-            Data: `From: ${email}\n\n${message}`,
-          },
-        },
-        Subject: {
-          Data: `Portfolio message from ${email}`,
-        },
-      },
-      Source: `Portfolio <${context.cloudflare.env.FROM_EMAIL}>`,
-      ReplyToAddresses: [email],
-    })
-  );
-
-  return json({ success: true });
-}
 
 export const Contact = () => {
   const errorRef = useRef();
-  const email = useFormInput('');
-  const message = useFormInput('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
   const initDelay = tokens.base.durationS;
-  const actionData = useActionData();
-  const { state } = useNavigation();
-  const sending = state === 'submitting';
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSending(true);
+    setError('');
+    
+    try {
+      // Replace YOUR_FORM_ID with your actual Formspree form ID
+      const response = await fetch('https://formspree.io/f/xeoaokvq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+        }),
+      });
+      
+      if (response.ok) {
+        setSuccess(true);
+        setName('');
+        setEmail('');
+        setMessage('');
+      } else {
+        setError('Failed to send the message. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <Section className={styles.contact}>
-      <Transition unmount in={!actionData?.success} timeout={1600}>
+      <Transition unmount in={!success} timeout={1600}>
         {({ status, nodeRef }) => (
-          <Form
-            unstable_viewTransition
+          <form
             className={styles.form}
-            method="post"
+            onSubmit={handleSubmit}
             ref={nodeRef}
           >
             <Heading
@@ -126,12 +93,18 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS, initDelay, 0.4)}
             />
-            {/* Hidden honeypot field to identify bots */}
             <Input
-              className={styles.botkiller}
-              label="Name"
+              required
+              className={styles.input}
+              data-status={status}
+              style={getDelay(tokens.base.durationXS, initDelay, 0.5)}
+              autoComplete="name"
+              label="Your name"
+              type="text"
               name="name"
-              maxLength={MAX_EMAIL_LENGTH}
+              maxLength={64}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             <Input
               required
@@ -143,7 +116,8 @@ export const Contact = () => {
               type="email"
               name="email"
               maxLength={MAX_EMAIL_LENGTH}
-              {...email}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               required
@@ -155,32 +129,19 @@ export const Contact = () => {
               label="Message"
               name="message"
               maxLength={MAX_MESSAGE_LENGTH}
-              {...message}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
-            <Transition
-              unmount
-              in={!sending && actionData?.errors}
-              timeout={msToNum(tokens.base.durationM)}
-            >
-              {({ status: errorStatus, nodeRef }) => (
-                <div
-                  className={styles.formError}
-                  ref={nodeRef}
-                  data-status={errorStatus}
-                  style={cssProps({
-                    height: errorStatus ? errorRef.current?.offsetHeight : 0,
-                  })}
-                >
-                  <div className={styles.formErrorContent} ref={errorRef}>
-                    <div className={styles.formErrorMessage}>
-                      <Icon className={styles.formErrorIcon} icon="error" />
-                      {actionData?.errors?.email}
-                      {actionData?.errors?.message}
-                    </div>
+            {error && (
+              <div className={styles.formError}>
+                <div className={styles.formErrorContent} ref={errorRef}>
+                  <div className={styles.formErrorMessage}>
+                    <Icon className={styles.formErrorIcon} icon="error" />
+                    {error}
                   </div>
                 </div>
-              )}
-            </Transition>
+              </div>
+            )}
             <Button
               className={styles.button}
               data-status={status}
@@ -194,10 +155,10 @@ export const Contact = () => {
             >
               Send message
             </Button>
-          </Form>
+          </form>
         )}
       </Transition>
-      <Transition unmount in={actionData?.success}>
+      <Transition unmount in={success}>
         {({ status, nodeRef }) => (
           <div className={styles.complete} aria-live="polite" ref={nodeRef}>
             <Heading
@@ -215,7 +176,7 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS)}
             >
-              I’ll get back to you within a couple days, sit tight
+              I'll get back to you within a couple days, sit tight
             </Text>
             <Button
               secondary
@@ -240,3 +201,5 @@ function getDelay(delayMs, offset = numToMs(0), multiplier = 1) {
   const numDelay = msToNum(delayMs) * multiplier;
   return cssProps({ delay: numToMs((msToNum(offset) + numDelay).toFixed(0)) });
 }
+
+export default Contact;
