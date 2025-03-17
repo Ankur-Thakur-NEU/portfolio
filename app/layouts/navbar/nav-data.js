@@ -27,8 +27,8 @@ export const socialLinks = [
     icon: 'linkedin',
   },
   {
-    label: 'Figma',
-    url: `https://www.figma.com/${config.figma}`,
-    icon: 'figma',
+    label: 'Devfolio',
+    url: `https://devfolio.co/${config.devfolio}`,
+    icon: 'link',
   },
 ];
