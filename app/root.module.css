@@ -3,9 +3,14 @@
     width: 100%;
     position: relative;
     transition: opacity 0.4s var(--bezierFastoutSlowin);
+    overflow-x: hidden;
 
     &[data-loading='true'] {
       opacity: 0;
+    }
+    
+    @media (--mediaMobile) {
+      overflow-x: hidden;
     }
   }
 

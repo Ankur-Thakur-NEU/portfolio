@@ -21,9 +21,15 @@
     transition: var(--durationM) ease;
     transition-property: background, opacity;
     color: var(--textBody);
-    width: 100vw;
+    width: 100%;
     overflow-x: hidden;
     opacity: 1;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+
+    @media (--mediaMobile) {
+      font-size: 14px;
+    }
 
     &:focus {
       outline: none;
@@ -46,6 +52,11 @@
 
   :global(:focus:not(:focus-visible)) {
     outline: none;
+  }
+  
+  :global(img, svg, video) {
+    max-width: 100%;
+    display: block;
   }
 
   @keyframes :global(fade-in) {
