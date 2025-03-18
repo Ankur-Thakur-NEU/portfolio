@@ -13,6 +13,18 @@
   :global(:root) {
     --mobileNavOffset: calc(var(--spaceOuter) * 2 + var(--space2XL));
   }
+  
+  @media (--mediaMobile) {
+    :global(:root) {
+      --spaceOuter: 24px;
+    }
+  }
+  
+  @media (--mediaMobileS) {
+    :global(:root) {
+      --spaceOuter: 16px;
+    }
+  }
 
   :global(html, body) {
     font-family: var(--fontStack);
@@ -26,14 +38,16 @@
     opacity: 1;
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
-
-    @media (--mediaMobile) {
+  }
+  
+  @media (--mediaMobile) {
+    :global(html, body) {
       font-size: 14px;
     }
+  }
 
-    &:focus {
-      outline: none;
-    }
+  :global(html:focus, body:focus) {
+    outline: none;
   }
 
   :global(:where(code, pre)) {
@@ -54,9 +68,19 @@
     outline: none;
   }
   
-  :global(img, svg, video) {
+  :global(img), :global(svg), :global(video) {
     max-width: 100%;
     display: block;
+    height: auto;
+  }
+  
+  :global(a) {
+    color: var(--textBody);
+    transition: color var(--durationS) ease;
+  }
+  
+  :global(a:hover) {
+    color: var(--accent);
   }
 
   @keyframes :global(fade-in) {

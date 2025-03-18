@@ -18,6 +18,12 @@
     @media (--mediaMobile) {
       --headerNavFontSize: calc((22 / 16) * 1rem);
       width: calc(100% - (var(--spaceOuter) * 2));
+      background-color: color-mix(in lab, var(--background) 80%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: var(--spaceXS) 0;
+      border-radius: var(--spaceS);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     @media (--mediaMobile), (--mediaMobileLS) {
@@ -33,6 +39,7 @@
 
     @media (--mediaMobile) {
       padding-bottom: var(--spaceS);
+      padding-left: var(--spaceM);
     }
   }
 
@@ -138,6 +145,11 @@
     &:active {
       color: var(--accent);
     }
+    
+    @media (--mediaMobile) {
+      width: var(--spaceXL);
+      height: var(--spaceXL);
+    }
   }
 
   .navIcon {
@@ -150,7 +162,7 @@
 
     position: fixed;
     inset: 0;
-    background: color-mix(in lab, var(--background) 70%, transparent);
+    background: color-mix(in lab, var(--background) 90%, transparent);
     transform: translate3d(0, -100%, 0);
     transition-property: background;
     transition-duration: var(--durationL);
@@ -162,9 +174,12 @@
     -webkit-backdrop-filter: var(--backdrop);
     backdrop-filter: var(--backdrop);
     padding: 0 var(--spaceM);
+    overflow-y: auto;
 
     @media (--mediaMobile), (--mediaMobileLS) {
       display: flex;
+      padding-top: var(--space3XL);
+      padding-bottom: var(--space3XL);
     }
 
     @media (--mediaUseMotion) {
